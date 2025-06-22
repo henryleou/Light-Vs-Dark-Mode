@@ -1,104 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Reading Experiment</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading Comprehension Experiment</title>
   <style>
-    body.light { background: white; color: black; }
-    body.dark { background: black; color: white; }
-    body.grey { background: #ccc; color: black; }
+    body.light { background: #ffffff; color: #000000; }
+    body.dark { background: #121212; color: #ffffff; }
     .container { max-width: 700px; margin: auto; padding: 2em; font-family: sans-serif; }
     .hidden { display: none; }
     textarea { width: 100%; height: 4em; }
-    input[type=number] { width: 3em; }
+    button { margin-top: 1em; padding: 0.5em 1em; font-size: 1em; }
   </style>
 </head>
-<body class="grey">
+<body>
   <div class="container">
-    <h1>Reading Study</h1>
-
+    <h1>Reading Study (Georgia Tech)</h1>
     <div id="consent">
-      <p>You will read a short passage and answer questions.</p>
-      <label><input type="checkbox" id="agree"> I consent</label><br>
+      <p>You will read a short passage in either dark or light mode and answer comprehension and comfort questions. Anonymous. Takes ~5 min.</p>
+      <label><input type="checkbox" id="agree"> I consent to participate.</label><br>
       <button onclick="startStudy()">Begin</button>
     </div>
 
     <div id="reading" class="hidden">
+      <h2>Reading Passage</h2>
       <p id="passage"></p>
       <button onclick="showQuiz()">I'm done reading</button>
     </div>
 
     <div id="quiz" class="hidden">
-      <h2>Questions</h2>
-      <textarea placeholder="Q1 answer"></textarea>
-      <textarea placeholder="Q2 answer"></textarea>
-      <textarea placeholder="Q3 answer"></textarea>
-      <p>Ease (1-5): <input type="number" min="1" max="5"></p>
-      <p>Comfort (1-5): <input type="number" min="1" max="5"></p>
-      <p>Strain (1-5): <input type="number" max="5" min="1"></p>
-      <p>Preference (1-5): <input type="number" max="5" min="1"></p>
-      <p>Comments:<br><textarea></textarea></p>
+      <h2>Comprehension Questions</h2>
+      <ol>
+        <li>What was the main idea of the passage?<br><textarea></textarea></li>
+        <li>Who or what was most affected in the reading?<br><textarea></textarea></li>
+        <li>What detail supported the author's main argument?<br><textarea></textarea></li>
+      </ol>
+      <h2>Comfort Survey (1-5)</h2>
+      <ol>
+        <li>Reading was easy: <input type="number" min="1" max="5"></li>
+        <li>I felt comfortable: <input type="number" min="1" max="5"></li>
+        <li>I experienced eye strain: <input type="number" min="1" max="5"></li>
+        <li>I liked this mode: <input type="number" min="1" max="5"></li>
+      </ol>
+      <p>Additional comments:<br><textarea></textarea></p>
       <button onclick="submitForm()">Submit</button>
     </div>
   </div>
 
   <script>
     const passages = {
-      light: "This is a sample passage in light mode...",
-      dark: "This is a sample passage in dark mode..."
+      light: In recent years, the popularity of dark mode interfaces has grown dramatically...,
+      dark: Dark mode displays, which show light text on a dark background, have been adopted...
     };
 
-    let mode;
-    let startTime;
+    let mode = Math.random() < 0.5 ? 'light' : 'dark';
+  document.body.className = mode;
+  let startTime;
 
     function startStudy() {
       if (!document.getElementById('agree').checked) {
-        alert("Consent required.");
+        alert("You must consent to proceed.");
         return;
       }
-      mode = Math.random() < 0.5 ? "light" : "dark";
-      startTime = new Date();
       document.body.className = mode;
       document.getElementById('consent').classList.add('hidden');
       document.getElementById('reading').classList.remove('hidden');
       document.getElementById('passage').innerText = passages[mode];
+      startTime = new Date();
     }
 
     function showQuiz() {
       document.getElementById('reading').classList.add('hidden');
       document.getElementById('quiz').classList.remove('hidden');
-      document.body.className = "grey";
     }
 
     function submitForm() {
-      const duration = ((new Date() - startTime) / 1000).toFixed(2);
-      const texts = document.querySelectorAll('textarea');
-      const nums = document.querySelectorAll('input[type=number]');
+    const duration = (new Date() - startTime) / 1000;
+    const data = {
+    mode: mode,
+    time: duration.toFixed(2),
+    q1: document.querySelectorAll('textarea')[0].value,
+    q2: document.querySelectorAll('textarea')[1].value,
+    q3: document.querySelectorAll('textarea')[2].value,
+    ease: document.querySelectorAll('input[type=number]')[0].value,
+    comfort: document.querySelectorAll('input[type=number]')[1].value,
+    strain: document.querySelectorAll('input[type=number]')[2].value,
+    preference: document.querySelectorAll('input[type=number]')[3].value,
+    comments: document.querySelectorAll('textarea')[3].value
+  };
 
-      const data = {
-        mode: mode,
-        time: duration,
-        q1: texts[0].value,
-        q2: texts[1].value,
-        q3: texts[2].value,
-        ease: nums[0].value,
-        comfort: nums[1].value,
-        strain: nums[2].value,
-        preference: nums[3].value,
-        comments: texts[3].value
-      };
+  fetch("https://script.google.com/macros/s/AKfycbwJPQ7SydHcybbDAiPXMdbvao7TEPSH34uHHumhbD_MOr8R2LOc-D7Nn1k-ozLSpVD2/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    contentType: "application/json"
+  }).then(res => {
+    alert("Submitted! Thanks!\nMode: " + mode + "\nTime: " + data.time + " seconds");
+    location.reload();
+  });
+}
 
-      fetch("https://script.google.com/macros/s/AKfycbwRFF4R4tolPuwslK4HDwAZCAEOxpqe8kwTnkwjvYevsQjw6qVNElZeIcNG6SqMi2mgEQ/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(res => res.text()).then(msg => {
-        alert(msg === "Success" ? "Submitted! You may now close this tab." : "Error: " + msg);
-      }).catch(err => {
-        alert("Submission error.");
-        console.error(err);
-      });
-    }
   </script>
 </body>
 </html>
