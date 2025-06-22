@@ -96,7 +96,7 @@
 
       fetch("https://script.google.com/macros/s/AKfycbwJPQ7SydHcybbDAiPXMdbvao7TEPSH34uHHumhbD_MOr8R2LOc-D7Nn1k-ozLSpVD2/exec", {
         method: "POST",
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(data)
       }).then(res => {
         if (res.ok) {
