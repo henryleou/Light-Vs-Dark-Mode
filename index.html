@@ -98,17 +98,10 @@
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(data)
-      }).then(res => {
-        if (res.ok) {
-          alert("Submission successful. Thank you!");
-          location.reload();
-        } else {
-          alert("Submission failed. Please try again later.");
-        }
-      }).catch(err => {
-        alert("Error submitting form. Please try again.");
-        console.error(err);
       });
+
+      alert("Thank you for your submission!");
+      location.reload();
     }
   </script>
 </body>
