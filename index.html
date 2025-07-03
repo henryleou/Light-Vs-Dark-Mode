@@ -95,16 +95,15 @@
 
     function submitForm() {
       const duration = (new Date() - startTime) / 1000;
-      const selectedOption = document.querySelector('input[name="q1"]:checked');
       const data = {
         mode: mode,
         time: duration.toFixed(2),
-        q1: selectedOption ? selectedOption.value : "Not answered",
+        q1: document.querySelector('input[name="q1"]:checked')?.value || "",
         ease: document.querySelectorAll('input[type=number]')[0].value,
         comfort: document.querySelectorAll('input[type=number]')[1].value,
         strain: document.querySelectorAll('input[type=number]')[2].value,
         preference: document.querySelectorAll('input[type=number]')[3].value,
-        comments: document.querySelector('textarea').value
+        comments: document.querySelectorAll('textarea')[0].value
       };
 
       fetch("https://script.google.com/macros/s/AKfycbwJPQ7SydHcybbDAiPXMdbvao7TEPSH34uHHumhbD_MOr8R2LOc-D7Nn1k-ozLSpVD2/exec", {
@@ -116,6 +115,7 @@
       alert("Thank you for your submission!");
       location.reload();
     }
+
   </script>
 </body>
 </html>
