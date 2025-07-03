@@ -30,19 +30,22 @@
     </div>
 
     <div id="quiz" class="hidden">
-      <h2>Comprehension Questions</h2>
-      <ol>
-        <li>What was the main idea of the passage?<br><textarea></textarea></li>
-        <li>Who or what was most affected in the reading?<br><textarea></textarea></li>
-        <li>What detail supported the author's main argument?<br><textarea></textarea></li>
-      </ol>
-      <h2>Comfort Survey (1-5)</h2>
+      <h2>Comprehension Check</h2>
+      <p>Which airline is the passage about?</p>
+      <label><input type="radio" name="q1" value="Delta Airlines"> A) Delta Airlines</label><br>
+      <label><input type="radio" name="q1" value="India Airlines"> B) India Airlines</label><br>
+      <label><input type="radio" name="q1" value="United Airlines"> C) United Airlines</label><br>
+      <label><input type="radio" name="q1" value="Southwest Airlines"> D) Southwest Airlines</label><br>
+      <label><input type="radio" name="q1" value="Boeing"> E) Boeing</label>
+
+      <h2>Comfort Survey Rating 1 - 5 (1 = very easy, 5 = very difficult)</h2>
       <ol>
         <li>Reading was easy: <input type="number" min="1" max="5"></li>
         <li>I felt comfortable: <input type="number" min="1" max="5"></li>
         <li>I experienced eye strain: <input type="number" min="1" max="5"></li>
         <li>I liked this mode: <input type="number" min="1" max="5"></li>
       </ol>
+
       <p>Additional comments:<br><textarea></textarea></p>
       <button onclick="submitForm()">Submit</button>
     </div>
@@ -53,14 +56,14 @@
       light: `Boeing Incident – June 2025
               In June 2025, a Boeing 737 Max aircraft operated by a regional airline experienced a mid-air systems failure, forcing an emergency landing. The plane lost partial control due to a malfunction in the flight management software, although pilots were able to land safely with no injuries reported. The FAA and Boeing immediately began a joint investigation, with preliminary findings pointing to faulty software updates. This incident reignited concerns over the 737 Max line, which had previously been grounded in 2019. Industry experts called for stricter oversight of autonomous flight systems and real-time diagnostic monitoring.
 
-              IEEE Citation:
+              Citation:
               [1] B. Baker, “Boeing 737 Max makes emergency landing in June incident,” BBC News, Jun. 9, 2025. [Online]. Available: https://www.bbc.com/news/business-boeing737
               `,
 
       dark: `Boeing Incident – June 2025
               In June 2025, a Boeing 737 Max aircraft operated by a regional airline experienced a mid-air systems failure, forcing an emergency landing. The plane lost partial control due to a malfunction in the flight management software, although pilots were able to land safely with no injuries reported. The FAA and Boeing immediately began a joint investigation, with preliminary findings pointing to faulty software updates. This incident reignited concerns over the 737 Max line, which had previously been grounded in 2019. Industry experts called for stricter oversight of autonomous flight systems and real-time diagnostic monitoring.
 
-              IEEE Citation:
+              Citation:
               [1] B. Baker, “Boeing 737 Max makes emergency landing in June incident,” BBC News, Jun. 9, 2025. [Online]. Available: https://www.bbc.com/news/business-boeing737
               `
     };
@@ -92,27 +95,33 @@
 
     function submitForm() {
       const duration = (new Date() - startTime) / 1000;
+      const selectedOption = document.querySelector('input[name="q1"]:checked');
       const data = {
         mode: mode,
         time: duration.toFixed(2),
-        q1: document.querySelectorAll('textarea')[0].value,
-        q2: document.querySelectorAll('textarea')[1].value,
-        q3: document.querySelectorAll('textarea')[2].value,
+        q1: selectedOption ? selectedOption.value : "Not answered",
         ease: document.querySelectorAll('input[type=number]')[0].value,
         comfort: document.querySelectorAll('input[type=number]')[1].value,
         strain: document.querySelectorAll('input[type=number]')[2].value,
         preference: document.querySelectorAll('input[type=number]')[3].value,
-        comments: document.querySelectorAll('textarea')[3].value
+        comments: document.querySelector('textarea').value
       };
 
       fetch("https://script.google.com/macros/s/AKfycbwJPQ7SydHcybbDAiPXMdbvao7TEPSH34uHHumhbD_MOr8R2LOc-D7Nn1k-ozLSpVD2/exec", {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(data)
+      }).then(res => {
+        if (res.ok) {
+          alert("Thank you for your submission!");
+          location.reload();
+        } else {
+          alert("Submission failed. Please try again later.");
+        }
+      }).catch(error => {
+        alert("Error submitting form. Please try again.");
+        console.error(error);
       });
-
-      alert("Thank you for your submission!");
-      location.reload();
     }
   </script>
 </body>
