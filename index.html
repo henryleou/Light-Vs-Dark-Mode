@@ -111,17 +111,10 @@
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(data)
-      }).then(res => {
-        if (res.ok) {
-          alert("Thank you for your submission!");
-          location.reload();
-        } else {
-          alert("Submission failed. Please try again later.");
-        }
-      }).catch(error => {
-        alert("Error submitting form. Please try again.");
-        console.error(error);
       });
+
+      alert("Thank you for your submission!");
+      location.reload();
     }
   </script>
 </body>
